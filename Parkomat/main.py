@@ -30,6 +30,8 @@ class Parkomat:
         self._time = datetime.now()
         self._leave = self._time
         self._totalsum = 0
+        self._start_hour = '8'
+        self._end_hour = '20'
 
     def getAmountOfCoin(self, coin):
         coin = Coin(coin)
@@ -45,11 +47,27 @@ class Parkomat:
     def setTime(self, year, month, day, hour, minute, second):
         dt = datetime.strptime(str(day + ' ' + month + ' ' + year), '%d %m %Y')
         self._time = dt.replace(hour=hour, minute=minute, second=second)
+        self._leave = self._time
+
+    def nextDay(self, amount):
+        self._leave += timedelta(days=amount)
+        self._leave = self._leave.replace(hour=8, minute=0)
+
+    def hourVal(self, delta):
+        if self._leave.isoweekday() == 6:
+            self.nextDay(2)
+        if self._leave.isoweekday() == 7:
+            self.nextDay(1)
+        if int(self._leave.hour) >= 20 or int(self._leave.hour) < 8:
+            self.nextDay(1)
+        self._totalsum += Decimal(0.01)
+        self._leave += timedelta(seconds=delta)
 
     def addCoin(self, coin, amount, plate):
         if plate != self._plate:
             self._totalsum = 0
             self._plate = plate
+            self._leave = self._time
         count = self.getAmountOfCoin(coin)
         if amount + count > 200:
             raise NotImplementedError
@@ -59,21 +77,18 @@ class Parkomat:
             self._money.append(coin)
             for c in range(int(gr)):
                 if self._totalsum < 2.0:
-                    self._totalsum += Decimal(0.01)
-                    self._leave += timedelta(seconds=18)
+                    self.hourVal(18)
                 elif self._totalsum < 6.0:
-                    self._totalsum += Decimal(0.01)
-                    self._leave += timedelta(seconds=9)
+                    self.hourVal(9)
                 else:
-                    self._totalsum += Decimal(0.01)
-                    self._leave += timedelta(seconds=7.2)
+                    self.hourVal(7.2)
         return self._leave
 
 
 s = Parkomat()
+s.setTime('2021', '5', '21', 23, 45, 0)
 print(s.getTime())
 print(s.addCoin(2, 3, 'KR99632'))
 print(s.addCoin(0.5, 5, 'KR99632'))
-
-# print(s.getAmountOfCoin(0.1))
-# s.setTime('2018', '5', '6', 12, 13, 45)
+print(s.addCoin(0.01, 5, 'KR49652'))
+print(s.getAmountOfCoin(2))
