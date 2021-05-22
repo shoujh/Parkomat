@@ -22,6 +22,9 @@ class ParkingMeter:
                 count += 1
         return count
 
+    def getLeaveTime(self):
+        return self._leave
+
     def getTime(self):
         return self._time
 
@@ -39,9 +42,16 @@ class ParkingMeter:
             self._plate = plate
             self._leave = self._time
 
+    def checkCoin(self, coin, amount):
+        if coin in coins:
+            count = self.getAmountOfCoin(coin)
+            if amount + count > 200:
+                return -1
+        return 1
+
     def nextDay(self, amount):
         self._leave += timedelta(days=amount)
-        self._leave = self._leave.replace(hour=8, minute=0)
+        self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
     def addGr(self, delta):
         self._totalsum += Decimal(0.01)
@@ -57,24 +67,24 @@ class ParkingMeter:
 
     def addCoin(self, coin, amount, plate):
         self.checkPlate(plate)
-        if coin in coins:
-            count = self.getAmountOfCoin(coin)
-            if amount + count > 200:
-                print("Proszę o wrzucenie innego nominału.")
-        coin = Coin(coin)
-        gr = coin.getValue() * 100
-        for i in range(amount):
-            self._money.append(coin)
-            for c in range(int(gr)):
-                if self._totalsum < 2.0:
-                    self.timeEval()
-                    self.addGr(18)
-                elif self._totalsum < 6.0:
-                    self.timeEval()
-                    self.addGr(9)
-                else:
-                    self.timeEval()
-                    self.addGr(7.2)
+        t = self.checkCoin(coin, amount)
+        if t == 1:
+            coin = Coin(coin)
+            gr = coin.getValue() * 100
+            for i in range(amount):
+                self._money.append(coin)
+                for c in range(int(gr)):
+                    if self._totalsum < 2.0:
+                        self.timeEval()
+                        self.addGr(18)
+                    elif self._totalsum < 6.0:
+                        self.timeEval()
+                        self.addGr(9)
+                    else:
+                        self.timeEval()
+                        self.addGr(7.2)
+        else:
+            print("Proszę o wrzucenie innego nominału.")
         return self._leave
 
     def getTicket(self):
