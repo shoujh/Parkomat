@@ -6,6 +6,7 @@ class gui:
     _amount = 0
     _value = 0.0
     _plate = ''
+    _date = ''
 
     def interface(self):
         p = ParkingMeter()
@@ -17,12 +18,20 @@ class gui:
         print(t.get())
         inputamount = Text(window, height=1, width=25)
         inputplate = Text(window, height=1, width=25)
+        inputtime = Text(window, height=1, width=25)
 
         def coinInsert(value):
             setattr(self, '_value', value)
             setattr(self, '_amount', inputamount.get(1.0, END)),
             setattr(self, '_plate', inputplate.get(1.0, END)),
             print(p.addCoin(float(self._value), int(self._amount), self._plate))
+
+        def changePresentDate():
+            setattr(self, '_date', inputtime.get(1.0, END))
+            self._date = self._date.split(" ", 5)
+            p.setTime(self._date[0], self._date[1], self._date[2], int(self._date[3]), int(self._date[4]), int(self._date[5]))
+            t.set(p.getTime())
+            return self._date
 
         coin001 = Button(window, height=2, width=25, text="1gr", command=lambda: coinInsert(0.01))
         coin002 = Button(window, height=2, width=25, text="2gr", command=lambda: coinInsert(0.02))
@@ -36,11 +45,12 @@ class gui:
         coin1000 = Button(window, height=2, width=25, text="10zł", command=lambda: coinInsert(10))
         coin2000 = Button(window, height=2, width=25, text="20zł", command=lambda: coinInsert(20))
         coin5000 = Button(window, height=2, width=25, text="50zł", command=lambda: coinInsert(50))
-        setdate = Button(window, height=2, width=20, text="Zmiana Daty", command=lambda: t.set(p.getLeaveTime()))
-        confirm = Button(window, height=2, width=20, text="Zatwierdź", command=lambda: print(p.getTicket()))
+        setdate = Button(window, height=2, width=20, text="Zmiana Daty", command=lambda: print(changePresentDate()))
+        confirm = Button(window, height=2, width=20, text="Zatwierdź", command=lambda: print(p))
 
         inputamount.pack()
         inputplate.pack()
+        inputtime.pack()
         coin001.pack()
         coin002.pack()
         coin005.pack()

@@ -14,6 +14,9 @@ class ParkingMeter:
         self._leave = self._time
         self._totalsum = 0
 
+    def __str__(self):
+        return 'BILET: rejestracja: {}, czas zakupu: {}, termin wyjazdu: {}\n'.format(self._plate, self._time, self._leave)
+
     def getAmountOfCoin(self, coin):
         coin = Coin(coin)
         count = 0
@@ -35,11 +38,12 @@ class ParkingMeter:
         except:
             print('Niepoprawna data lub godzina')
         self._leave = self._time
+        self._totalsum = 0
 
     def checkPlate(self, plate):
-        if plate != self._plate:
+        if plate.strip() != self._plate:
             self._totalsum = 0
-            self._plate = plate
+            self._plate = plate.strip()
             self._leave = self._time
 
     def checkCoin(self, coin, amount):
