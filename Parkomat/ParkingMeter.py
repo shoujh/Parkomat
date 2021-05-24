@@ -14,7 +14,8 @@ class ParkingMeter:
         self._totalsum = 0
 
     def __str__(self):
-        return 'BILET: rejestracja: {}, czas zakupu: {}, termin wyjazdu: {}'.format(self._plate, self._time, self._leave)
+        return 'BILET: rejestracja: {}, czas zakupu: {}, termin wyjazdu: {}'.format(self._plate, self._time,
+                                                                                    self._leave)
 
     def getAmountOfCoin(self, coin):
         coin = Coin(coin)
@@ -23,6 +24,15 @@ class ParkingMeter:
             if coin.getValue() == self._money[i].getValue():
                 count += 1
         return count
+
+    def getPlate(self):
+        return self._plate
+
+    def getMoney(self):
+        return self._money
+
+    def getTotalsum(self):
+        return self._totalsum
 
     def zeroSumandLeave(self):
         self._totalsum = 0
@@ -37,9 +47,10 @@ class ParkingMeter:
     def setTime(self, year, month, day, hour, minute, second):
         try:
             dt = datetime.strptime(str(day + ' ' + month + ' ' + year), '%d %m %Y')
-            self._time = dt.replace(hour=hour, minute=minute, second=second)
+            d = dt.replace(hour=hour, minute=minute, second=second)
         except:
-            print('Niepoprawna data lub godzina')
+            return 'Niepoprawna data lub godzina'
+        self._time = d
         self._leave = self._time
         self._totalsum = 0
 
@@ -55,7 +66,7 @@ class ParkingMeter:
             self._plate = plate
             return True
 
-    def checkCoin(self, coin, amount)->bool:
+    def checkCoin(self, coin, amount) -> bool:
         if coin in coins:
             count = self.getAmountOfCoin(coin)
             if amount + count > 200:
@@ -98,6 +109,3 @@ class ParkingMeter:
             return "Zaktualizowano czas wyjazdu: {}".format(self._leave)
         else:
             return "Proszę o wrzucenie innego nominału."
-
-    def getTicket(self):
-        return self._plate, self._time, self._leave

@@ -36,7 +36,7 @@ class gui:
                           int(self._date[5]))
                 t.set(p.getTime())
             except:
-                print("Niepoprawna data lub godzina")
+                return "Niepoprawna data lub godzina"
             return "Zaktualizowano czas"
 
         def Confirm():

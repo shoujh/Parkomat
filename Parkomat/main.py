@@ -1,12 +1,13 @@
 from ParkingMeter import *
 from GUI import *
 
-g = gui()
-g.interface()
-# s = ParkingMeter()
-# print(s.checkPlate('\n'))
-
-# s.setTime('2021', '13', '21', 18, 0, 0)
+# g = gui()
+# g.interface()
+s = ParkingMeter()
+s.setTime('2020', '25', '21', 12, 26, 0)
+print(s.getTime())
+# print(s.getLeaveTime())
+# s.setTime('2021', '13', '21', 26, 0, 0)
 # print(s.getTime())
 # print(s.addCoin(2, 3, 'KR99632'))
 # print(s.addCoin(10, 10, 'KR99632'))
