@@ -15,23 +15,42 @@ class gui:
         t = StringVar()
         t.set(p.getTime())
         Label(window, textvariable=t).pack()
-        print(t.get())
+        # print(t.get())
         inputamount = Text(window, height=1, width=25)
         inputplate = Text(window, height=1, width=25)
         inputtime = Text(window, height=1, width=25)
 
         def coinInsert(value):
             setattr(self, '_value', value)
-            setattr(self, '_amount', inputamount.get(1.0, END)),
-            setattr(self, '_plate', inputplate.get(1.0, END)),
-            print(p.addCoin(float(self._value), int(self._amount), self._plate))
+            setattr(self, '_amount', inputamount.get(1.0, END))
+            try:
+                print(p.addCoin(float(self._value), int(self._amount)))
+            except ValueError:
+                print("Błędna ilość monet")
 
         def changePresentDate():
             setattr(self, '_date', inputtime.get(1.0, END))
             self._date = self._date.split(" ", 5)
-            p.setTime(self._date[0], self._date[1], self._date[2], int(self._date[3]), int(self._date[4]), int(self._date[5]))
-            t.set(p.getTime())
-            return self._date
+            try:
+                p.setTime(self._date[0], self._date[1], self._date[2], int(self._date[3]), int(self._date[4]),
+                          int(self._date[5]))
+                t.set(p.getTime())
+            except:
+                print("Niepoprawna data lub godzina")
+            return "Zaktualizowano czas"
+
+        def Confirm():
+            x = 0
+            setattr(self, '_plate', inputplate.get(1.0, END))
+            if not p.checkPlate(self._plate):
+                print("Niepoprawna rejestracja")
+                x += 1
+            if p.getTime() == p.getLeaveTime():
+                print("Nie wrzucono żadnych monet")
+                x += 1
+            if x == 0:
+                print(p)
+                p.zeroSumandLeave()
 
         coin001 = Button(window, height=2, width=25, text="1gr", command=lambda: coinInsert(0.01))
         coin002 = Button(window, height=2, width=25, text="2gr", command=lambda: coinInsert(0.02))
@@ -46,7 +65,7 @@ class gui:
         coin2000 = Button(window, height=2, width=25, text="20zł", command=lambda: coinInsert(20))
         coin5000 = Button(window, height=2, width=25, text="50zł", command=lambda: coinInsert(50))
         setdate = Button(window, height=2, width=20, text="Zmiana Daty", command=lambda: print(changePresentDate()))
-        confirm = Button(window, height=2, width=20, text="Zatwierdź", command=lambda: print(p))
+        confirm = Button(window, height=2, width=20, text="Zatwierdź", command=lambda: Confirm())
 
         inputamount.pack()
         inputplate.pack()

@@ -4,6 +4,8 @@ from GUI import *
 g = gui()
 g.interface()
 # s = ParkingMeter()
+# print(s.checkPlate('\n'))
+
 # s.setTime('2021', '13', '21', 18, 0, 0)
 # print(s.getTime())
 # print(s.addCoin(2, 3, 'KR99632'))
