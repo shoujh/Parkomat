@@ -25,7 +25,7 @@ class gui:
             setattr(self, '_amount', inputamount.get(1.0, END))
             try:
                 print(p.addCoin(float(self._value), int(self._amount)))
-            except ValueError:
+            except:
                 print("Błędna ilość monet")
 
         def changePresentDate():
@@ -40,17 +40,8 @@ class gui:
             return "Zaktualizowano czas"
 
         def Confirm():
-            x = 0
             setattr(self, '_plate', inputplate.get(1.0, END))
-            if not p.checkPlate(self._plate):
-                print("Niepoprawna rejestracja")
-                x += 1
-            if p.getTime() == p.getLeaveTime():
-                print("Nie wrzucono żadnych monet")
-                x += 1
-            if x == 0:
-                print(p)
-                p.zeroSumandLeave()
+            print(p.confirmPress(self._plate))
 
         coin001 = Button(window, height=2, width=25, text="1gr", command=lambda: coinInsert(0.01))
         coin002 = Button(window, height=2, width=25, text="2gr", command=lambda: coinInsert(0.02))

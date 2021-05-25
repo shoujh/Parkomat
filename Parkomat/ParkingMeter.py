@@ -78,34 +78,54 @@ class ParkingMeter:
         self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
     def addGr(self, delta):
-        self._totalsum += Decimal(0.01)
-        self._leave += timedelta(seconds=delta)
-
-    def timeEval(self):
+        secaftertwenty = 0
+        if int(self._leave.hour) >= 20 or int(self._leave.hour) < 8:
+            if self._totalsum != 0:
+                secaftertwenty = str(self._leave).split(' ', 1)
+                secaftertwenty = secaftertwenty[1].split(':', 2)
+                secaftertwenty = float(secaftertwenty[2])
+            self.nextDay(1)
         if self._leave.isoweekday() == 6:
             self.nextDay(2)
         if self._leave.isoweekday() == 7:
             self.nextDay(1)
-        if int(self._leave.hour) >= 20 or int(self._leave.hour) < 8:
-            self.nextDay(1)
+        self._totalsum += Decimal(0.01)
+        self._leave += timedelta(seconds=delta + secaftertwenty)
 
     def addCoin(self, coin, amount):
-        t = self.checkCoin(coin, amount)
-        if t == True:
+        if self.checkCoin(coin, amount):
             coin = Coin(coin)
             gr = coin.getValue() * 100
             for i in range(amount):
                 self._money.append(coin)
                 for c in range(int(gr)):
                     if self._totalsum < 2.0:
-                        self.timeEval()
                         self.addGr(18)
                     elif self._totalsum < 6.0:
-                        self.timeEval()
                         self.addGr(9)
                     else:
-                        self.timeEval()
                         self.addGr(7.2)
             return "Zaktualizowano czas wyjazdu: {}".format(self._leave)
         else:
-            return "Proszę o wrzucenie innego nominału."
+            return "Proszę o wrzucenie innego nominału"
+
+    def confirmPress(self, plate):
+        x = False
+        y = False
+        if not self.checkPlate(plate):
+
+            y = True
+        if self.getTime() == self.getLeaveTime():
+
+            x = True
+        if x is False and y is False:
+            temp = str(self)
+            self.zeroSumandLeave()
+            return temp
+        elif x is True and y is True:
+            return "Niepoprawna rejestracja oraz nie wrzucono żadnych monet"
+        elif x is True:
+            return "Nie wrzucono żadnych monet"
+        elif y is True:
+            return "Niepoprawna rejestracja"
+

@@ -1,11 +1,17 @@
-from ParkingMeter import *
+# from ParkingMeter import *
 from GUI import *
 
-# g = gui()
-# g.interface()
-s = ParkingMeter()
-s.setTime('2020', '25', '21', 12, 26, 0)
-print(s.getTime())
+g = gui()
+g.interface()
+# s = ParkingMeter()
+# s.setTime('2021', '5', '21', 17, 30, 0)
+# s.addCoin(2, 3)
+# print(s.getLeaveTime())
+# s.addCoin(5, 2)
+# print(s.getLeaveTime())
+# s.setTime('2021', '5', '21', 19, 10, 0)
+# s.addCoin(2, 1)
+# print(s.getLeaveTime())
 # print(s.getLeaveTime())
 # s.setTime('2021', '13', '21', 26, 0, 0)
 # print(s.getTime())
