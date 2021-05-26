@@ -8,25 +8,41 @@ class gui:
     _plate = ''
     _date = ''
 
+    def popup_window(self, p):
+        window = Toplevel()
+
+        label = Label(window, height=2, text=p)
+        label.pack()
+
+        button_close = Button(window, text="Zamknij", command=window.destroy)
+        button_close.pack(fill='x')
+
     def interface(self):
         p = ParkingMeter()
         window = Tk()
         window.title("Parkomat")
         t = StringVar()
-        t.set(p.getTime())
-        Label(window, textvariable=t).pack()
-        # print(t.get())
+        tl = StringVar()
+        t.set("Aktualna data: {}".format(p.getTime()))
+        tl.set("Termin wyjazdu {}".format(p.getLeaveTime()))
+        Label(window, height=2, textvariable=t).pack()
+        Label(window, height=2, textvariable=tl).pack()
         inputamount = Text(window, height=1, width=25)
         inputplate = Text(window, height=1, width=25)
         inputtime = Text(window, height=1, width=25)
 
         def coinInsert(value):
+            check = True
             setattr(self, '_value', value)
-            setattr(self, '_amount', inputamount.get(1.0, END))
             try:
+                setattr(self, '_amount', inputamount.get(1.0, END))
+                check = p.checkCoin(float(self._value), int(self._amount))
                 print(p.addCoin(float(self._value), int(self._amount)))
+                tl.set("Termin wyjazdu {}".format(p.getLeaveTime()))
             except:
                 print("Błędna ilość monet")
+            if not check:
+                self.popup_window("Proszę o wrzucenie innego nominału")
 
         def changePresentDate():
             setattr(self, '_date', inputtime.get(1.0, END))
@@ -34,14 +50,16 @@ class gui:
             try:
                 p.setTime(self._date[0], self._date[1], self._date[2], int(self._date[3]), int(self._date[4]),
                           int(self._date[5]))
-                t.set(p.getTime())
+                t.set("Aktualna data: {}".format(p.getTime()))
+                tl.set("Termin wyjazdu {}".format(p.getLeaveTime()))
             except:
                 return "Niepoprawna data lub godzina"
             return "Zaktualizowano czas"
 
         def Confirm():
             setattr(self, '_plate', inputplate.get(1.0, END))
-            print(p.confirmPress(self._plate))
+            self.popup_window(p.confirmPress(self._plate))
+            tl.set("Termin wyjazdu {}".format(p.getLeaveTime()))
 
         coin001 = Button(window, height=2, width=25, text="1gr", command=lambda: coinInsert(0.01))
         coin002 = Button(window, height=2, width=25, text="2gr", command=lambda: coinInsert(0.02))
@@ -55,12 +73,17 @@ class gui:
         coin1000 = Button(window, height=2, width=25, text="10zł", command=lambda: coinInsert(10))
         coin2000 = Button(window, height=2, width=25, text="20zł", command=lambda: coinInsert(20))
         coin5000 = Button(window, height=2, width=25, text="50zł", command=lambda: coinInsert(50))
-        setdate = Button(window, height=2, width=20, text="Zmiana Daty", command=lambda: print(changePresentDate()))
-        confirm = Button(window, height=2, width=20, text="Zatwierdź", command=lambda: Confirm())
+        setdate = Button(window, height=3, width=20, text="Zmiana Daty", command=lambda: print(changePresentDate()))
+        confirm = Button(window, height=3, width=20, text="Zatwierdź", command=lambda: Confirm())
+        button_close = Button(window, height=3, width=20, text="Zamknij", command=window.destroy)
 
+        Label(window, text="Ilość:").pack()
         inputamount.pack()
+        Label(window, text="Rejestracja:").pack()
         inputplate.pack()
+        Label(window, text="Zmiana czasu:").pack()
         inputtime.pack()
+        setdate.pack()
         coin001.pack()
         coin002.pack()
         coin005.pack()
@@ -73,6 +96,6 @@ class gui:
         coin1000.pack()
         coin2000.pack()
         coin5000.pack()
-        setdate.pack()
         confirm.pack()
+        button_close.pack()
         window.mainloop()

@@ -113,10 +113,8 @@ class ParkingMeter:
         x = False
         y = False
         if not self.checkPlate(plate):
-
             y = True
         if self.getTime() == self.getLeaveTime():
-
             x = True
         if x is False and y is False:
             temp = str(self)
@@ -128,4 +126,3 @@ class ParkingMeter:
             return "Nie wrzucono żadnych monet"
         elif y is True:
             return "Niepoprawna rejestracja"
-
