@@ -9,7 +9,7 @@ class WrongNominalException(Exception):
         super().__init__(info)
 
 
-class Coin:
+class Coin:  # klasa przechowująca monetę lub banknot
     def __init__(self, value):
         self._values = coins.union(banknotes)
         if value in self._values:

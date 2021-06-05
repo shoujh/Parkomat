@@ -5,7 +5,8 @@ letters_numbers = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "
                    "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
 
-class ParkingMeter:
+class ParkingMeter:  # klasa Parkomat
+    # przechowuje listę monet, tablice rejestracyjną, aktualny czas, termin wyjazdu oraz sumę wrzuconych monet
     def __init__(self):
         self._money = []
         self._plate = ''
@@ -17,7 +18,7 @@ class ParkingMeter:
         return 'BILET: rejestracja: {}, czas zakupu: {}, termin wyjazdu: {}'.format(self._plate, self._time,
                                                                                     self._leave)
 
-    def getAmountOfCoin(self, coin):
+    def getAmountOfCoin(self, coin):  # ilość monet danego nominału w parkomacie
         coin = Coin(coin)
         count = 0
         for i in range(len(self._money)):
@@ -25,26 +26,26 @@ class ParkingMeter:
                 count += 1
         return count
 
-    def getPlate(self):
+    def getPlate(self):  # zwraca tablice
         return self._plate
 
-    def getMoney(self):
+    def getMoney(self):  # zwraca listę monet
         return self._money
 
-    def getTotalsum(self):
+    def getTotalsum(self):  # zwraca sumę wrzuconych monet
         return self._totalsum
 
-    def zeroSumandLeave(self):
+    def getLeaveTime(self):  # zwraca termin wyjazdu
+        return self._leave
+
+    def getTime(self):  # zwraca aktualny czas
+        return self._time
+
+    def zeroSumandLeave(self): # zeruje sumę oraz resetuje termin wyjazdu
         self._totalsum = 0
         self._leave = self._time
 
-    def getLeaveTime(self):
-        return self._leave
-
-    def getTime(self):
-        return self._time
-
-    def setTime(self, year, month, day, hour, minute, second):
+    def setTime(self, year, month, day, hour, minute, second):  # zmiana aktualnego czasu
         try:
             dt = datetime.strptime(str(day + ' ' + month + ' ' + year), '%d %m %Y')
             d = dt.replace(hour=hour, minute=minute, second=second)
@@ -54,7 +55,7 @@ class ParkingMeter:
         self._leave = self._time
         self._totalsum = 0
 
-    def checkPlate(self, plate) -> bool:
+    def checkPlate(self, plate) -> bool:  # sprawdzenie poprawności rejestracji
         if plate == '' or plate == '\n':
             return False
         plate = plate.upper()
@@ -66,14 +67,14 @@ class ParkingMeter:
             self._plate = plate
             return True
 
-    def checkCoin(self, coin, amount) -> bool:
+    def checkCoin(self, coin, amount) -> bool:  # bool czy przy wrzucaniu danych monet zostanie przekroczony limit
         if coin in coins:
             count = self.getAmountOfCoin(coin)
             if amount + count > 200:
                 return False
         return True
 
-    def nextDay(self, amount):
+    def nextDay(self, amount):  # przejście na x kolejnych dni i ustawienie czasu na 8:00
         self._leave += timedelta(days=amount)
         self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
@@ -84,7 +85,9 @@ class ParkingMeter:
                 secaftertwenty = str(self._leave).split(' ', 1)
                 secaftertwenty = secaftertwenty[1].split(':', 2)
                 secaftertwenty = float(secaftertwenty[2])
-            self.nextDay(1)
+                self.nextDay(0)
+            if 20 <= int(self._leave.hour) <= 23:
+                self.nextDay(1)
         if self._leave.isoweekday() == 6:
             self.nextDay(2)
         if self._leave.isoweekday() == 7:
