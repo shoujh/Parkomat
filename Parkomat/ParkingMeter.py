@@ -79,21 +79,32 @@ class ParkingMeter:  # klasa Parkomat
         self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
     def addGr(self, delta):
+        if self._totalsum == 0:
+            if int(self._leave.hour) < 8:
+                self.nextDay(1)
+            if int(self._leave.hour) >= 20:
+                self.nextDay(1)
+            if self._leave.isoweekday() == 6:
+                self.nextDay(2)
+            if self._leave.isoweekday() == 7:
+                self.nextDay(1)
         secaftertwenty = 0
+        self._totalsum += Decimal(0.01)
+        self._leave += timedelta(seconds=delta)
         if int(self._leave.hour) >= 20 or int(self._leave.hour) < 8:
             if self._totalsum != 0:
                 secaftertwenty = str(self._leave).split(' ', 1)
                 secaftertwenty = secaftertwenty[1].split(':', 2)
                 secaftertwenty = float(secaftertwenty[2])
-                self.nextDay(0)
             if 20 <= int(self._leave.hour) <= 23:
                 self.nextDay(1)
+            else:
+                self.nextDay(0)
         if self._leave.isoweekday() == 6:
             self.nextDay(2)
         if self._leave.isoweekday() == 7:
             self.nextDay(1)
-        self._totalsum += Decimal(0.01)
-        self._leave += timedelta(seconds=delta + secaftertwenty)
+        self._leave += timedelta(seconds=secaftertwenty)
 
     def addCoin(self, coin, amount):
         if self.checkCoin(coin, amount):

@@ -8,9 +8,6 @@ class TestParkMeter(unittest.TestCase):
 
 
 class TestInit(TestParkMeter):  # tworzenie obiektu ParkMeter i sprawdzanie działania funkcji __init__
-    def setUp(self):
-        super().setUp()
-
     def testInitialPlate(self):
         self.assertEqual(self.p.getPlate(), '')
 
@@ -25,9 +22,6 @@ class TestInit(TestParkMeter):  # tworzenie obiektu ParkMeter i sprawdzanie dzia
 
 
 class TestHour(TestParkMeter):  # test 1. (niepoprawna godzina, godzina 12:34)
-    def setUp(self):
-        super().setUp()
-
     def testSetWrongHour(self):
         temp = self.p.getTime()
 
