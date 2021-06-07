@@ -52,8 +52,7 @@ class ParkingMeter:  # klasa Parkomat
         except:
             return 'Niepoprawna data lub godzina'
         self._time = d
-        self._leave = self._time
-        self._totalsum = 0
+        self.zeroSumandLeave()
 
     def checkPlate(self, plate) -> bool:  # sprawdzenie poprawności rejestracji
         if plate == '' or plate == '\n':
