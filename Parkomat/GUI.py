@@ -2,13 +2,13 @@ from tkinter import *
 from ParkingMeter import *
 
 
-class gui:
+class gui:  # klasa interfejsu
     _amount = 0
     _value = 0.0
     _plate = ''
     _date = ''
 
-    def popup_window(self, p):
+    def popup_window(self, p):  # funkcja tworząca okno popup
         window = Toplevel()
 
         label = Label(window, height=2, text=p)
@@ -17,7 +17,7 @@ class gui:
         button_close = Button(window, text="Zamknij", command=window.destroy)
         button_close.pack(fill='x')
 
-    def interface(self):
+    def interface(self):  # funkcja wywołująca interfejs
         p = ParkingMeter()
         window = Tk()
         window.title("Parkomat")
@@ -31,7 +31,7 @@ class gui:
         inputplate = Text(window, height=1, width=25)
         inputtime = Text(window, height=1, width=25)
 
-        def coinInsert(value):
+        def coinInsert(value):  # funkcja wrzucenia monety, pobiera ilość z pola tekstowego
             check = True
             setattr(self, '_value', value)
             try:
@@ -44,7 +44,7 @@ class gui:
             if not check:
                 self.popup_window("Proszę o wrzucenie innego nominału")
 
-        def changePresentDate():
+        def changePresentDate():  # funkcja zmieniająca bieżącą date na wprowadzoną w pole tekstowe
             setattr(self, '_date', inputtime.get(1.0, END))
             self._date = self._date.split(" ", 5)
             try:
@@ -56,11 +56,12 @@ class gui:
                 return "Niepoprawna data lub godzina"
             return "Zaktualizowano czas"
 
-        def Confirm():
+        def Confirm():  # funkcja zatwierdzająca wydanie biletu, rejestracja wprowadzona w pole tekstowe
             setattr(self, '_plate', inputplate.get(1.0, END))
             self.popup_window(p.confirmPress(self._plate))
             tl.set("Termin wyjazdu {}".format(p.getLeaveTime()))
 
+        # przyciski oraz pola
         coin001 = Button(window, height=2, width=25, text="1gr", command=lambda: coinInsert(0.01))
         coin002 = Button(window, height=2, width=25, text="2gr", command=lambda: coinInsert(0.02))
         coin005 = Button(window, height=2, width=25, text="5gr", command=lambda: coinInsert(0.05))

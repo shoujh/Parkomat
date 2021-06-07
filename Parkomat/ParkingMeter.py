@@ -78,7 +78,7 @@ class ParkingMeter:  # klasa Parkomat
         self._leave += timedelta(days=amount)
         self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
-    def addGr(self, delta):
+    def addGr(self, delta):  # doliczenie wartości pojedynczego grosza oraz czasu odpowiadającemu groszowi
         if self._totalsum == 0:
             if int(self._leave.hour) < 8:
                 self.nextDay(1)
@@ -106,7 +106,7 @@ class ParkingMeter:  # klasa Parkomat
             self.nextDay(1)
         self._leave += timedelta(seconds=secaftertwenty)
 
-    def addCoin(self, coin, amount):
+    def addCoin(self, coin, amount):  # wrzucenie monet danego typu w podanej ilości
         if self.checkCoin(coin, amount):
             coin = Coin(coin)
             gr = coin.getValue() * 100
@@ -123,7 +123,7 @@ class ParkingMeter:  # klasa Parkomat
         else:
             return "Proszę o wrzucenie innego nominału"
 
-    def confirmPress(self, plate):
+    def confirmPress(self, plate):  # zatwierdzenie wydania biletu z parkomatu
         x = False
         y = False
         if not self.checkPlate(plate):
