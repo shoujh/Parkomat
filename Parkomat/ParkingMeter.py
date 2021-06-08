@@ -88,7 +88,7 @@ class ParkingMeter:
 
     def setTime(self, year, month, day, hour, minute, second):
         """
-        zmienia aktualny czas
+        Zmienia aktualny czas
 
         :param year: rok
         :param month: miesiąc
