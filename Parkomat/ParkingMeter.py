@@ -5,8 +5,12 @@ letters_numbers = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "
                    "U", "V", "W", "X", "Y", "Z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
 
-class ParkingMeter:  # klasa Parkomat
-    # przechowuje listę monet, tablice rejestracyjną, aktualny czas, termin wyjazdu oraz sumę wrzuconych monet
+class ParkingMeter:
+    """
+    Klasa Parkomat
+
+    Przechowuje listę monet, tablice rejestracyjną, aktualny czas, termin wyjazdu oraz sumę wrzuconych monet
+    """
     def __init__(self):
         self._money = []
         self._plate = ''
@@ -15,10 +19,19 @@ class ParkingMeter:  # klasa Parkomat
         self._totalsum = 0
 
     def __str__(self):
+        """
+        Reprezentacja str parkomatu jest wykorzystana jako bilet wydawany przez parkomat.
+        """
         return 'BILET: rejestracja: {}, czas zakupu: {}, termin wyjazdu: {}'.format(self._plate, self._time,
                                                                                     self._leave)
 
-    def getAmountOfCoin(self, coin):  # ilość monet danego nominału w parkomacie
+    def getAmountOfCoin(self, coin):
+        """
+        Metoda zliczająca ilość danej monety w parkomacie
+
+        :param coin: nominał monety
+        :return: ilość monet danego nominału w parkomacie
+        """
         coin = Coin(coin)
         count = 0
         for i in range(len(self._money)):
@@ -26,26 +39,64 @@ class ParkingMeter:  # klasa Parkomat
                 count += 1
         return count
 
-    def getPlate(self):  # zwraca tablice
+    def getPlate(self):
+        """
+        Metoda zwracająca zmienną prywatną
+
+        :return: tablica rejestracyjna
+        """
         return self._plate
 
-    def getMoney(self):  # zwraca listę monet
+    def getMoney(self):
+        """
+        Metoda zwracająca zmienną prywatną
+
+        :return: lista monet
+        """
         return self._money
 
-    def getTotalsum(self):  # zwraca sumę wrzuconych monet
+    def getTotalsum(self):
+        """
+            Metoda zwracająca zmienną prywatną
+
+            :return: suma wrzuconych monet
+        """
         return self._totalsum
 
-    def getLeaveTime(self):  # zwraca termin wyjazdu
+    def getLeaveTime(self):
+        """
+            Metoda zwracająca zmienną prywatną
+
+            :return: termin wyjazdu
+        """
         return self._leave
 
-    def getTime(self):  # zwraca aktualny czas
+    def getTime(self):
+        """
+            Metoda zwracająca zmienną prywatną
+
+            :return: aktualny czas
+        """
         return self._time
 
-    def zeroSumandLeave(self): # zeruje sumę oraz resetuje termin wyjazdu
+    def zeroSumandLeave(self):
+        """
+        Zeruje sumę wrzuconych monet oraz ustawia termin wyjazdu na aktualny czas
+        """
         self._totalsum = 0
         self._leave = self._time
 
-    def setTime(self, year, month, day, hour, minute, second):  # zmiana aktualnego czasu
+    def setTime(self, year, month, day, hour, minute, second):
+        """
+        zmienia aktualny czas
+
+        :param year: rok
+        :param month: miesiąc
+        :param day: dzień
+        :param hour: godzina
+        :param minute: minuta
+        :param second: sekunda
+        """
         try:
             dt = datetime.strptime(str(day + ' ' + month + ' ' + year), '%d %m %Y')
             d = dt.replace(hour=hour, minute=minute, second=second)
@@ -54,7 +105,13 @@ class ParkingMeter:  # klasa Parkomat
         self._time = d
         self.zeroSumandLeave()
 
-    def checkPlate(self, plate) -> bool:  # sprawdzenie poprawności rejestracji
+    def checkPlate(self, plate) -> bool:
+        """
+        Sprawdzanie poprawności rejestracji
+
+        :param plate: tablica rejestracyjna
+        :return: bool
+        """
         if plate == '' or plate == '\n':
             return False
         plate = plate.upper()
@@ -66,18 +123,36 @@ class ParkingMeter:  # klasa Parkomat
             self._plate = plate
             return True
 
-    def checkCoin(self, coin, amount) -> bool:  # bool czy przy wrzucaniu danych monet zostanie przekroczony limit
+    def checkCoin(self, coin, amount) -> bool:
+        """
+        Sprawdzanie czy przy wrzucaniu danej ilości monet danego nominału zostanie przekroczony limit 200 monet
+
+        :param coin: nominał
+        :param amount: ilość
+        :return: bool
+        """
         if coin in coins:
             count = self.getAmountOfCoin(coin)
             if amount + count > 200:
                 return False
         return True
 
-    def nextDay(self, amount):  # przejście na x kolejnych dni i ustawienie czasu na 8:00
+    def nextDay(self, amount):
+        """
+        Przesunięcie czasu o konkretną ilość dni oraz ustawienie czasu na 8:00
+
+        :param amount: ilość dni
+        """
         self._leave += timedelta(days=amount)
         self._leave = self._leave.replace(hour=8, minute=0, second=0, microsecond=0)
 
-    def addGr(self, delta):  # doliczenie wartości pojedynczego grosza oraz czasu odpowiadającemu groszowi
+    def addGr(self, delta):
+        """
+        Operacja dodająca do sumy 1 gr oraz do terminu wyjazdu odpowiednią ilość sekund przekazaną w metodzie,
+        zawiera warunki dotyczące przechodzenia czasu na kolejny dzień oraz pomijania weekendów
+
+        :param delta: ilość sekund
+        """
         if self._totalsum == 0:
             if int(self._leave.hour) < 8:
                 self.nextDay(1)
@@ -105,7 +180,14 @@ class ParkingMeter:  # klasa Parkomat
             self.nextDay(1)
         self._leave += timedelta(seconds=secaftertwenty)
 
-    def addCoin(self, coin, amount):  # wrzucenie monet danego typu w podanej ilości
+    def addCoin(self, coin, amount):
+        """
+        Wrzucenie monet/banknotów o przekazanym nominale oraz przekazanej ilości
+
+        :param coin: nominał
+        :param amount: ilość
+        :return: Zaktualizowany termin wyjazdu, w przypadku przekroczenia limitu prośba o inny nominał
+        """
         if self.checkCoin(coin, amount):
             coin = Coin(coin)
             gr = coin.getValue() * 100
@@ -122,7 +204,13 @@ class ParkingMeter:  # klasa Parkomat
         else:
             return "Proszę o wrzucenie innego nominału"
 
-    def confirmPress(self, plate):  # zatwierdzenie wydania biletu z parkomatu
+    def confirmPress(self, plate):
+        """
+        Wydanie biletu, przekazana rejestracja
+
+        :param plate: tablicja rejestracyjna
+        :return: bilet, w przypadku błędnej rejestracji lub braku wrzuconych monet odpowiedni komunikat
+        """
         x = False
         y = False
         if not self.checkPlate(plate):
